@@ -7,9 +7,9 @@ export const accountRouter = router({
   signUp: publicProcedure
     .input(signUpSchema)
     .mutation(async ({ input, ctx }) => {
-      // skip if user exists
+      // skip if participant exists
       if (
-        await ctx.prisma.user.findFirst({
+        await ctx.prisma.participant.findFirst({
           where: {
             email: input.email,
           },
@@ -22,7 +22,7 @@ export const accountRouter = router({
       }
 
       // create new user
-      await ctx.prisma.user.create({
+      await ctx.prisma.participant.create({
         data: input,
       });
 
@@ -31,14 +31,14 @@ export const accountRouter = router({
       };
     }),
   getBuddy: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.user.findFirst({
+    return await ctx.prisma.participant.findFirst({
       where: {
         name: "Lukas",
       },
     });
   }),
   getAllNames: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findMany({
+    return ctx.prisma.participant.findMany({
       select: { name: true },
     });
   }),
