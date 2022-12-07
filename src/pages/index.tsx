@@ -13,8 +13,8 @@ import { saveEmailToLocalstorage } from "../utils/utils";
 const Home: NextPage = () => {
   const signUp = trpc.account.signUp.useMutation();
 
-  // const endTime = 1671231599000;
-  const endTime = 1670438098711;
+  const signUpEndTime = 1671231599000;
+  const giftEndTime = 1671292800000;
 
   const {
     register,
@@ -24,6 +24,8 @@ const Home: NextPage = () => {
   } = useForm({
     resolver: zodResolver(signUpSchema),
   })
+
+  const formatTime = (time: number) => new Date(time).toLocaleDateString('de-DE')
 
   return (
     <>
@@ -40,13 +42,14 @@ const Home: NextPage = () => {
             <span className="block mt-2">🎅🧑‍🎄🤶</span>
 
           </h1>
-          {endTime < Date.now() ?
-            <div className="text-2xl text-white text-center">
-              Die Anmeldung ist leider vorbei!
+          {signUpEndTime < Date.now() ?
+            <div className="text-2xl text-white text-center max-w-sm">
+              <p>Die Anmeldung ist leider vorbei!</p>
+              <p className="mt-4">Bitte besorge bis zum {formatTime(giftEndTime)} ein Geschenk im Wert von 5 €</p>
             </div>
             :
             <><div className="text-2xl text-white text-center">
-              Jetzt bis zum {new Date(endTime).toLocaleDateString('de-DE')} Anmelden oder das beste Wichteln verpassen!
+              Jetzt bis zum {formatTime(signUpEndTime)} Anmelden oder das beste Wichteln verpassen!
             </div>
               <div className="text-2xl p-4">
                 <form className="flex flex-col gap-6 text-white" onSubmit={handleSubmit(details => {
