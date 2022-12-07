@@ -25,8 +25,8 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (!names || !buddyData?.buddy?.name) return;
 
-    let interval: any;
-    let timeout: any;
+    let interval: ReturnType<typeof setInterval>;
+    let timeout: ReturnType<typeof setTimeout>;
 
     let runRotationTimeoutDuration = 0;
     if (Date.now() < buddyData?.endTime) {
@@ -112,7 +112,7 @@ const Home: NextPage = () => {
 
 const BuddyCountdown: React.FC<{ endTime: number, giftBuddy: string }> = ({ endTime, giftBuddy }) => {
   // state variable to trigger rerender
-  const [_, setTick] = useState(0);
+  const [, setTick] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
