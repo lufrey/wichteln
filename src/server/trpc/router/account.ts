@@ -1,5 +1,4 @@
 import { TRPCError } from "@trpc/server";
-import { env } from "process";
 import { z } from "zod";
 import { getUserSchema, signUpSchema } from "../../../types/account";
 
@@ -49,9 +48,8 @@ export const accountRouter = router({
   getBuddy: publicProcedure
     .input(z.object({ email: z.string() }))
     .query(async ({ input, ctx }) => {
-      // const endTime = parseInt(env.ENDTIME ?? "10000000000");
+      const endTime = parseInt(process.env.ENDTIME ?? "10000000000");
 
-      const endTime = 10000;
       const user = await ctx.prisma.participant.findFirst({
         where: {
           email: input.email,
@@ -101,7 +99,7 @@ export const accountRouter = router({
         });
         buddy = updatedUser?.sendGiftTo;
       } else {
-        buddy = user.sendGiftTo;
+        buddy = user?.sendGiftTo;
       }
 
       return {

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { env } from "process";
 
 export const config = {
   matcher: ["/", "/((?!api|_next/static|favicon.ico).*)"],
@@ -9,8 +8,6 @@ export const config = {
 export function middleware(req: NextRequest) {
   const basicAuth = req.headers.get("authorization");
   const url = req.nextUrl;
-
-  console.log(process.env.BASIC_AUTH);
 
   if (basicAuth) {
     const authValue = basicAuth.split(" ")[1] ?? ":";
