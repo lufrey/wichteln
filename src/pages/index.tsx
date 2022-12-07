@@ -13,6 +13,9 @@ import { saveEmailToLocalstorage } from "../utils/utils";
 const Home: NextPage = () => {
   const signUp = trpc.account.signUp.useMutation();
 
+  // const endTime = 1671231599000;
+  const endTime = 1670438098711;
+
   const {
     register,
     handleSubmit,
@@ -37,32 +40,36 @@ const Home: NextPage = () => {
             <span className="block mt-2">🎅🧑‍🎄🤶</span>
 
           </h1>
-
-          <div className="text-2xl text-white text-center">
-            Jetzt Anmelden oder das beste Wichteln verpassen!
-          </div>
-          <div className="text-2xl p-4">
-            <form className="flex flex-col gap-6 text-white" onSubmit={handleSubmit(details => {
-              signUp.mutate(details as z.infer<typeof signUpSchema>);
-              saveEmailToLocalstorage(details.email);
-              reset();
-            })}>
-              <div>
-                <label htmlFor="name" className="block ">Name</label>
-                <input id="name" className="px-2 w-full rounded-md mt-2 bg-white/10 outline-none" type="text" {...register("name")} />
-                {errors.name?.message && <div className="text-sm mt-2">{`${errors.name?.message ?? ''}`}</div>}
+          {endTime < Date.now() ?
+            <div className="text-2xl text-white text-center">
+              Die Anmeldung ist leider vorbei!
+            </div>
+            :
+            <><div className="text-2xl text-white text-center">
+              Jetzt bis zum {new Date(endTime).toLocaleDateString('de-DE')} Anmelden oder das beste Wichteln verpassen!
+            </div>
+              <div className="text-2xl p-4">
+                <form className="flex flex-col gap-6 text-white" onSubmit={handleSubmit(details => {
+                  signUp.mutate(details as z.infer<typeof signUpSchema>);
+                  saveEmailToLocalstorage(details.email);
+                  reset();
+                })}>
+                  <div>
+                    <label htmlFor="name" className="block ">Name</label>
+                    <input id="name" className="px-2 w-full rounded-md mt-2 bg-white/10 outline-none" type="text" {...register("name")} />
+                    {errors.name?.message && <div className="text-sm mt-2">{`${errors.name?.message ?? ''}`}</div>}
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block ">E-Mail</label>
+                    <input id="email" className="px-2 w-full rounded-md mt-2 bg-white/10 outline-none" type="text" {...register("email")} />
+                    {errors.email?.message && <div className="text-sm mt-2">{`${errors.email?.message ?? ''}`}</div>}
+                  </div>
+                  <button type="submit" className="px-4 py-2 rounded-md bg-white/10 hover:bg-white/20 transition-colors">Teilnehmen</button>
+                  {signUp.error ? <div className="text-sm text-center">{signUp.error?.message}</div> : null}
+                  {signUp.data ? <div className="text-sm text-center">{signUp.data?.result}</div> : null}
+                </form>
               </div>
-              <div>
-                <label htmlFor="email" className="block ">E-Mail</label>
-                <input id="email" className="px-2 w-full rounded-md mt-2 bg-white/10 outline-none" type="text" {...register("email")} />
-                {errors.email?.message && <div className="text-sm mt-2">{`${errors.email?.message ?? ''}`}</div>}
-              </div>
-              <button type="submit" className="px-4 py-2 rounded-md bg-white/10 hover:bg-white/20 transition-colors">Teilnehmen</button>
-              {signUp.error ? <div className="text-sm text-center">{signUp.error?.message}</div> : null}
-              {signUp.data ? <div className="text-sm text-center">{signUp.data?.result}</div> : null}
-            </form>
-          </div>
-
+            </>}
 
           <Link
             className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"

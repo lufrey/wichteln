@@ -11,16 +11,14 @@ import { trpc } from "../utils/trpc";
 import { getEmailFromLocalstorage, saveEmailToLocalstorage } from "../utils/utils";
 
 const Home: NextPage = () => {
-  const { data: names } = trpc.account.getAllNames.useQuery();
-  const { data: buddyData } = trpc.account.getBuddy.useQuery();
   const [email, setEmail] = useState(getEmailFromLocalstorage);
+
+  const { data: names } = trpc.account.getAllNames.useQuery();
+  const { data: buddyData } = trpc.account.getBuddy.useQuery({ email });
 
   const [giftBuddy, setGiftBuddy] = useState('????');
 
   const { data: user } = trpc.account.getAccount.useQuery({ email }, { enabled: !!email });
-
-  if (buddyData)
-    buddyData.endTime = 1670435713650;
 
   useEffect(() => {
     if (!names || !buddyData?.buddy?.name) return;
@@ -53,7 +51,7 @@ const Home: NextPage = () => {
       clearInterval(interval);
       clearTimeout(timeout);
     }
-  }, [names, buddyData?.buddy?.name, buddyData?.endTime, user?.name]);
+  }, [names, buddyData?.buddy?.name, buddyData?.endTime, user?.name, email]);
 
 
   const {

@@ -8,11 +8,14 @@ datasource db {
 }
 
 model Participant {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String       @id @default(cuid())
+  name            String
+  email           String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  sendGiftTo      Participant? @relation("Buddies", fields: [receiverId], references: [id])
+  receiveGiftFrom Participant? @relation("Buddies")
+  receiverId      String?      @unique
 }
 
 model Account {
