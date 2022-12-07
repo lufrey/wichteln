@@ -1,8 +1,8 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-
-import { env } from "../../../env/server.mjs";
 import { prisma } from "../../../server/db/client";
 
 export const authOptions: NextAuthOptions = {
@@ -18,8 +18,30 @@ export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
   providers: [
-    // ...add more providers here
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "E-Mail", type: "text", placeholder: "" },
+      },
+      authorize: async (credentials) => {
+        const user = await prisma.participant.findFirst({
+          where: {
+            email: credentials?.email,
+          },
+        });
+
+        console.log(user);
+        if (user) {
+          return user;
+        }
+        return null;
+      },
+    }),
   ],
+  // pages: {
+  //   signIn: "/auth/login",
+  //   error: "/auth/login", // Error code passed in query string as ?error=
+  // },
 };
 
 export default NextAuth(authOptions);

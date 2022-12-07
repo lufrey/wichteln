@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { trpc } from "../utils/trpc";
 import { signUpSchema } from "../types/account";
 import type { z } from "zod";
+import { saveEmailToLocalstorage } from "../utils/utils";
 
 const Home: NextPage = () => {
   const signUp = trpc.account.signUp.useMutation();
@@ -44,6 +45,7 @@ const Home: NextPage = () => {
           <div className="text-2xl p-4">
             <form className="flex flex-col gap-6 text-white" onSubmit={handleSubmit(details => {
               signUp.mutate(details as z.infer<typeof signUpSchema>);
+              saveEmailToLocalstorage(details.email);
               reset();
             })}>
               <div>
@@ -70,7 +72,6 @@ const Home: NextPage = () => {
             <h3 className="text-2xl font-bold">Geschenkbuddy finden →</h3>
           </Link>
         </div>
-        {/* <AuthShowcase /> */}
       </main>
     </>
   );
@@ -79,27 +80,3 @@ const Home: NextPage = () => {
 
 
 export default Home;
-
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
-
-  const { data: secretMessage } = trpc.auth.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  );
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => signOut() : () => signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-};
