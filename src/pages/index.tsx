@@ -13,7 +13,7 @@ import { saveEmailToLocalstorage } from "../utils/utils";
 const Home: NextPage = () => {
   const signUp = trpc.account.signUp.useMutation();
 
-  const signUpEndTime = 1671231599000;
+  const signUpEndTime = 1670756400000;
   const giftEndTime = 1671292800000;
 
   const {
